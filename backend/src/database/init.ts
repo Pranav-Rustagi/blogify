@@ -30,3 +30,7 @@ async function init() {
 init().catch(() => {
   process.exit(1);
 });
+
+export {
+  pool
+};
