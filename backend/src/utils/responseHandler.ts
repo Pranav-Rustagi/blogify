@@ -54,8 +54,6 @@ const responseErrorHandler = ({ res, statusCode = 400, error = 'Something went w
         }
     }
 
-    logger.error(responseMessage);
-
     res.status(responseStatusCode).json({
         success: false,
         error: responseMessage

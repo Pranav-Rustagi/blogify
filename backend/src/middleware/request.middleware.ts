@@ -20,8 +20,6 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
         responseMessage = errorData.message;
     }
 
-    logger.error(responseMessage);
-
     res.status(responseStatusCode).json({ success: false, error: responseMessage });
 };
 
