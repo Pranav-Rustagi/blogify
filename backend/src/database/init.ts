@@ -1,12 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { Pool } from "pg";
 import logger from "../config/logger";
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: false
-});
+import { pool } from "./db";
 
 async function init() {
   try {
@@ -22,15 +17,9 @@ async function init() {
   } catch (error) {
     logger.error("Error initializing database", error);
     throw error;
-  } finally {
-    await pool.end();
   }
 }
 
 init().catch(() => {
   process.exit(1);
 });
-
-export {
-  pool
-};
