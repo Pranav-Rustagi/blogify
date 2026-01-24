@@ -1,20 +1,29 @@
 'use client';
 
 import Link from 'next/link';
+import { useAuthStore } from '@/src/store/auth';
+// import { useBlogStore } from '@/src/store/blog';
+import { useCallback, useEffect } from 'react';
 import { LogOut } from 'lucide-react';
-import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  const isAuthenticated = false;
-  const user = null;
-  const blogs:any = [];
+  const { isAuthenticated, user, logout } = useAuthStore();
+  // const { blogs, fetchAllBlogs } = useBlogStore();
 
-  const logout = () => {};
-  const fetchAllBlogs = () => {};
+  const router = useRouter();
+
+  const fetchAllBlogs = () => { };
+  const blogs: any = [];
 
   useEffect(() => {
     fetchAllBlogs();
   }, [fetchAllBlogs]);
+
+  const handleLogout = useCallback(() => {
+    logout();
+    router.push('/');
+  }, [router, logout]);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-red-50">
@@ -42,11 +51,10 @@ export default function Home() {
                   Write Blog
                 </Link>
                 <button
-                  onClick={logout}
-                  className="flex gap-2 items-center px-4 py-2 text-dark-blue bg-blue-100 rounded-lg transition-colors font-semibold"
+                  onClick={handleLogout}
+                  className="flex gap-2 items-center px-4 py-2 text-dark-blue rounded-lg transition-colors font-semibold"
                 >
-                  {/* Logout */}
-                  <LogOut className="w-5 h-5" />
+                  Logout <LogOut className="w-5 h-5" />
                 </button>
               </>
             ) : (
@@ -273,17 +281,16 @@ export default function Home() {
               <p className="text-xl text-gray-600 mb-10">
                 No blogs yet, but there are stories waiting to be written!
               </p>
-                <Link
-                  href={isAuthenticated ? "/blogs/create" : "/auth/signup"}
-                  className="inline-block px-8 py-4 bg-linear-to-r from-dark-red to-red-700 text-white font-bold rounded-lg hover:shadow-lg transition-all hover:scale-105 text-lg"
-                >
-                  Be the First to Write
-                </Link>
+              <Link
+                href={isAuthenticated ? "/blogs/create" : "/auth/signup"}
+                className="inline-block px-8 py-4 bg-linear-to-r from-dark-red to-red-700 text-white font-bold rounded-lg hover:shadow-lg transition-all hover:scale-105 text-lg"
+              >
+                Be the First to Write
+              </Link>
             </div>
           )}
         </div>
 
-        {/* CTA Section */}
         {!isAuthenticated && (
           <div className="bg-linear-to-r from-dark-red to-dark-blue/90 rounded-3xl p-12 md:p-16 text-center text-white mb-20">
             <h3 className="text-4xl md:text-5xl font-bold mb-4">
@@ -303,7 +310,6 @@ export default function Home() {
 
       </main>
 
-      {/* Footer */}
       <footer className="bg-gray-50 border-t border-gray-200 mt-20">
         <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="grid md:grid-cols-3 gap-12 mb-12">
