@@ -4,7 +4,7 @@ import { pool } from "../database/db";
 import bcrypt from "bcrypt";
 
 interface newUserProps {
-    name: string,
+    username: string,
     email: string,
     password: string
 };
@@ -26,10 +26,10 @@ const checkExistingUser = async (email: string) => {
     }
 }
 
-const addNewUser = async ({ name, email, password: hashedPassword }: newUserProps) => {
+const addNewUser = async ({ username, email, password: hashedPassword }: newUserProps) => {
     try {
-        const query = "INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3)";
-        await pool.query(query, [name, email, hashedPassword]);
+        const query = "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3)";
+        await pool.query(query, [username, email, hashedPassword]);
     } catch (err) {
         logger.error("Error occurred in addNewUser()");
         throw err;
@@ -37,7 +37,7 @@ const addNewUser = async ({ name, email, password: hashedPassword }: newUserProp
 }
 
 
-const registerUser = async ({ name, email, password }: newUserProps) => {
+const registerUser = async ({ username, email, password }: newUserProps) => {
     try {
         const userExists = await checkExistingUser(email);
         if (userExists) {
@@ -46,7 +46,7 @@ const registerUser = async ({ name, email, password }: newUserProps) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 12);
-        await addNewUser({ name, email, password: hashedPassword });
+        await addNewUser({ username, email, password: hashedPassword });
     } catch (err) {
         logger.error("Error occurred in registerUser()");
         throw err;
@@ -60,7 +60,7 @@ interface signInProps {
 
 const signInUser = async ({ email, password }: signInProps) => {
     try {
-        const query = "SELECT id, name, email, password_hash FROM users WHERE email = $1";
+        const query = "SELECT id, username, email, password_hash FROM users WHERE email = $1";
         const records = await pool.query(query, [email]);
 
         if ((records.rowCount ?? 0) === 0) {
