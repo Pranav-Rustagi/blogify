@@ -20,7 +20,8 @@ const checkExistingUser = async (email: string) => {
         }
 
         return false;
-    } catch (err) {
+    } catch (err: any) {
+        logger.error(err.message);
         logger.error("Error occurred in checkExistingUser()");
         throw err;
     }
@@ -28,9 +29,11 @@ const checkExistingUser = async (email: string) => {
 
 const addNewUser = async ({ username, email, password: hashedPassword }: newUserProps) => {
     try {
-        const query = "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3)";
-        await pool.query(query, [username, email, hashedPassword]);
-    } catch (err) {
+        const query = "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id";
+        const result = await pool.query(query, [username, email, hashedPassword]);
+        return result.rows[0].id;
+    } catch (err: any) {
+        logger.error(err.message);
         logger.error("Error occurred in addNewUser()");
         throw err;
     }
@@ -46,7 +49,8 @@ const registerUser = async ({ username, email, password }: newUserProps) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 12);
-        await addNewUser({ username, email, password: hashedPassword });
+        const result = await addNewUser({ username, email, password: hashedPassword });
+        return result;
     } catch (err) {
         logger.error("Error occurred in registerUser()");
         throw err;
@@ -62,11 +66,11 @@ const signInUser = async ({ email, password }: signInProps) => {
     try {
         const query = "SELECT id, username, email, password_hash FROM users WHERE email = $1";
         const records = await pool.query(query, [email]);
-
+        
         if ((records.rowCount ?? 0) === 0) {
             throw new Error(ERROR_TYPES.INVALID_CREDENTIALS);
         }
-
+        
         const user = records.rows[0];
         const isPasswordValid = await bcrypt.compare(password, user.password_hash);
 
@@ -79,7 +83,8 @@ const signInUser = async ({ email, password }: signInProps) => {
             email: user.email
         };
 
-    } catch (err) {
+    } catch (err: any) {
+        logger.error(err.message);
         logger.error("Error occurred in signInUser()");
         throw err;
     }

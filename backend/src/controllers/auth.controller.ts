@@ -19,11 +19,11 @@ const signUpController = async (req: Request, res: Response) => {
             return;
         }
 
-        await registerUser({ ...parsed.data });
+        const userId = await registerUser({ ...parsed.data });
 
         const responseCode = RESPONSE_TYPES.USER_CREATED as keyof typeof RESPONSE_TYPES;
 
-        responseHandler({ res, responseCode });
+        responseHandler({ res, responseCode, data: { user: userId } });
     } catch (err: any) {
         logger.error("Error occurred in signUpController()");
         throw err;
@@ -58,7 +58,7 @@ const signInController = async (req: Request, res: Response) => {
 
         const responseCode = RESPONSE_TYPES.SIGN_IN_SUCCESS as keyof typeof RESPONSE_TYPES;
 
-        responseHandler({ res, responseCode });
+        responseHandler({ res, responseCode, data: { user: user.userId } });
     } catch (err: any) {
         logger.error("Error occurred in signInController()");
         throw err;
