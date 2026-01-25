@@ -44,7 +44,7 @@ export const PasswordInput = ({ id, name, value, onChange, placeholder = '••
     );
 };
 
-export const TextInput = ({ id, name, type = 'text', value, onChange, placeholder, error, label }: TextInputProps) => (
+export const TextInput = ({ id, name, type = 'text', value, onChange, placeholder, error, label, maxLength }: TextInputProps) => (
     <div>
         {label && (
             <label htmlFor={id} className="block text-sm font-semibold text-gray-700 mb-2">
@@ -59,6 +59,7 @@ export const TextInput = ({ id, name, type = 'text', value, onChange, placeholde
             value={value}
             onChange={onChange}
             placeholder={placeholder}
+            maxLength={maxLength}
             className={`w-full px-4 py-3 rounded-lg border-2 transition-all ${error
                     ? 'border-dark-red bg-red-50 focus:outline-none focus:border-dark-red'
                     : 'border-gray-200 bg-gray-50 focus:outline-none focus:border-dark-blue'

@@ -4,16 +4,16 @@ import Link from 'next/link';
 import { useAuthStore } from '@/src/store/auth';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
 import { ProtectedRoute } from '@/app/_components/ProtectedRoute';
 import { Button, TextInput, Card, FormSection } from '@/app/_components/form-components';
 import { BLOG_ROUTES } from '@/src/constants';
+import { useApi } from '@/src/hooks/useApi';
 
 function CreateBlogContent() {
     const router = useRouter();
-    const { isAuthenticated, logout } = useAuthStore();
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const { isAuthenticated } = useAuthStore();
+
+    const { request, loading, error } = useApi();
 
     const [formData, setFormData] = useState({
         title: '',
@@ -70,33 +70,34 @@ function CreateBlogContent() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError('');
 
-        if (!validateForm()) {
-            return;
-        }
+        if (!validateForm()) return;
 
-        try {
-            setLoading(true);
-
-            await axios.post(BLOG_ROUTES.CREATE, {
+        const result = await request(
+            "POST",
+            BLOG_ROUTES.CREATE,
+            {
                 title: formData.title,
                 body: formData.body,
-            });
+            },
+            {
+                onSuccess: () => {
+                    setFormData({
+                        title: "",
+                        body: "",
+                    });
 
-            setFormData({
-                title: '',
-                body: '',
-            });
+                    router.push("/blogs");
+                },
+                onError: (message) => {
+                    console.error("Failed to create blog:", message);
+                },
+            }
+        );
 
-            router.push('/blogs');
-        } catch (error: any) {
-            console.error('Failed to create blog:', error);
-            setError(error.response?.data?.message || 'Failed to create blog. Please try again.');
-        } finally {
-            setLoading(false);
-        }
+        if (!result) return;
     };
+
 
     return (
         <main className="max-w-4xl mx-auto px-4 py-12">
@@ -117,6 +118,7 @@ function CreateBlogContent() {
                             name="title"
                             label="Blog Title"
                             placeholder="Enter a compelling title for your blog"
+                            maxLength={50}
                             value={formData.title}
                             onChange={handleChange}
                             error={validationErrors.title}

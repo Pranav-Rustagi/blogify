@@ -1,8 +1,6 @@
+import axios from '../lib/axios';
 import { create } from 'zustand';
 import { BLOG_ROUTES } from '../constants';
-import axios from 'axios';
-
-axios.defaults.withCredentials = true;
 
 interface Blog {
     id: string;

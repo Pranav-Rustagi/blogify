@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { useAuthStore } from '@/src/store/auth';
 import { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import axios from 'axios';
 import { BLOG_ROUTES } from '@/src/constants';
 import { Edit, MoveLeft, Trash2 } from 'lucide-react';
+import { useApi } from '@/src/hooks/useApi';
 
 interface Blog {
     id: string;
@@ -21,27 +21,32 @@ interface Blog {
 export default function BlogDetailPage() {
     const params = useParams();
     const router = useRouter();
+    const { request, loading, error } = useApi();
     const blogId = params.id as string;
     const { user } = useAuthStore();
     const [currentBlog, setCurrentBlog] = useState<Blog | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
     const [isDeleting, setIsDeleting] = useState(false);
 
-    const fetchBlogById = useCallback(async (id: string) => {
-        try {
-            setLoading(true);
-            setError('');
-            const response = await axios.get(`${BLOG_ROUTES.FETCH}/${id}`);
-            setCurrentBlog(response.data?.data);
-        } catch (err) {
-            console.error('Error fetching blog:', err);
-            setError('Failed to load blog. Please try again later.');
-            setCurrentBlog(null);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+    const fetchBlogById = useCallback(
+        async (id: string) => {
+            const result = await request(
+                "GET",
+                `${BLOG_ROUTES.FETCH}/${id}`,
+                undefined,
+                {
+                    onSuccess: (data: any) => {
+                        setCurrentBlog(data?.data ?? null);
+                    },
+                    onError: () => {
+                        setCurrentBlog(null);
+                    },
+                }
+            );
+
+            if (!result) return;
+        },
+        [request]
+    );
 
     useEffect(() => {
         if (blogId) {
@@ -50,14 +55,23 @@ export default function BlogDetailPage() {
     }, [blogId, fetchBlogById]);
 
     const handleDelete = async () => {
-        if (!window.confirm('Are you sure you want to delete this blog?')) return;
+        if (!window.confirm("Are you sure you want to delete this blog?")) return;
 
         try {
             setIsDeleting(true);
-            await axios.delete(`${BLOG_ROUTES.DELETE}/${blogId}`);
-            router.push('/blogs');
-        } catch (error: any) {
-            alert(error.response?.data?.message || 'Failed to delete blog');
+
+            await request(
+                "DELETE",
+                `${BLOG_ROUTES.DELETE}/${blogId}`,
+                undefined,
+                {
+                    onError: (message) => {
+                        alert(message || "Failed to delete blog");
+                    },
+                }
+            );
+
+            router.push("/blogs");
         } finally {
             setIsDeleting(false);
         }
@@ -154,7 +168,6 @@ export default function BlogDetailPage() {
 
                             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500">
                                 <span>
-                                    {/* By{' '} */}
                                     <span className="font-semibold text-dark-red">
                                         @{currentBlog.author_name}
                                     </span>

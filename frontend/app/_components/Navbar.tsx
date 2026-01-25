@@ -23,16 +23,13 @@ export default function Navbar() {
     return (
         <nav className="bg-white shadow-sm border-b border-gray-100">
             <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-                {/* Logo */}
                 <Link href="/">
                     <h1 className="text-3xl font-bold bg-linear-to-r from-dark-red to-dark-blue bg-clip-text text-transparent cursor-pointer hover:opacity-80 transition-opacity">
                         Blogify
                     </h1>
                 </Link>
 
-                {/* Actions */}
                 <div className="flex gap-4 items-center">
-                    {/* Route-based links */}
                     {isHome && (
                         <Link
                             href="/blogs"
@@ -51,7 +48,6 @@ export default function Navbar() {
                         </Link>
                     )}
 
-                    {/* Auth-based actions */}
                     {isAuthenticated ? (
                         <>
                             {!isEditor && (
