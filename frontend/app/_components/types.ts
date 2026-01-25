@@ -5,7 +5,7 @@ export interface PasswordInputProps {
 }
 
 export interface TextInputProps {
-    id: string; name: string; type?: string; value: string;
+    id: string; name: string; type?: string; value: string; maxLength?: number;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string; error?: string; label?: string;
 }

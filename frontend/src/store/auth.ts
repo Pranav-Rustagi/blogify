@@ -1,8 +1,6 @@
-import axios from 'axios';
+import axios from '../lib/axios';
 import { create } from 'zustand';
 import { AUTH_ROUTES } from '../constants';
-
-axios.defaults.withCredentials = true;
 
 interface AuthUser {
     id: string;

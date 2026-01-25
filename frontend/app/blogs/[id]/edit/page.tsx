@@ -4,20 +4,20 @@ import Link from 'next/link';
 import { useAuthStore } from '@/src/store/auth';
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import axios from 'axios';
 import { ProtectedRoute } from '@/app/_components/ProtectedRoute';
 import { Button, TextInput, Card, FormSection } from '@/app/_components/form-components';
 import { BLOG_ROUTES } from '@/src/constants';
+import { useApi } from '@/src/hooks/useApi';
 
 function UpdateBlogContent() {
     const router = useRouter();
     const params = useParams();
     const blogId = params.id as string;
     const { isAuthenticated, user } = useAuthStore();
-    const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
-    const [error, setError] = useState('');
     const [isAuthor, setIsAuthor] = useState(false);
+
+    const { request, loading, error } = useApi();
 
     const [formData, setFormData] = useState({
         title: '',
@@ -29,12 +29,22 @@ function UpdateBlogContent() {
         body: '',
     });
 
-    const fetchBlogById = useCallback(async (id: string) => {
-        try {
-            setLoading(true);
-            setError('');
-            const response = await axios.get(`${BLOG_ROUTES.FETCH}/${id}`);
-            const blog = response.data?.data;
+    const fetchBlogById = useCallback(
+        async (id: string) => {
+            const response = await request(
+                "GET",
+                `${BLOG_ROUTES.FETCH}/${id}`,
+                undefined,
+                {
+                    onError: (message) => {
+                        console.error("Error fetching blog:", message);
+                    },
+                }
+            ) as any;
+
+            const blog = response?.data;
+
+            if (!blog) return;
 
             setFormData({
                 title: blog.title,
@@ -44,13 +54,9 @@ function UpdateBlogContent() {
             if (user && blog.author_id === user.id) {
                 setIsAuthor(true);
             }
-        } catch (err) {
-            console.error('Error fetching blog:', err);
-            setError('Failed to load blog. Please try again later.');
-        } finally {
-            setLoading(false);
-        }
-    }, [user]);
+        },
+        [user, request]
+    );
 
     useEffect(() => {
         if (blogId) {
@@ -105,25 +111,28 @@ function UpdateBlogContent() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError('');
 
-        if (!validateForm()) {
-            return;
-        }
+        if (!validateForm()) return;
 
         try {
             setSubmitting(true);
 
-            await axios.patch(BLOG_ROUTES.UPDATE, {
-                id: blogId,
-                title: formData.title,
-                body: formData.body,
-            });
+            await request(
+                "PATCH",
+                BLOG_ROUTES.UPDATE,
+                {
+                    id: blogId,
+                    title: formData.title,
+                    body: formData.body,
+                },
+                {
+                    onError: (message) => {
+                        console.error("Failed to update blog:", message);
+                    },
+                }
+            );
 
             router.push(`/blogs/${blogId}`);
-        } catch (error: any) {
-            console.error('Failed to update blog:', error);
-            setError(error.response?.data?.message || 'Failed to update blog. Please try again.');
         } finally {
             setSubmitting(false);
         }
