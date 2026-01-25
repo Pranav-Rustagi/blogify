@@ -9,7 +9,7 @@ blogRouter.get('/:blogId', viewBlogController);
 
 blogRouter.post('/create', authMiddleware, createBlogController);
 blogRouter.patch('/update', authMiddleware, updateBlogController);
-blogRouter.delete('/delete', authMiddleware, deleteBlogController);
+blogRouter.delete('/delete/:blogId', authMiddleware, deleteBlogController);
 
 
 export {
