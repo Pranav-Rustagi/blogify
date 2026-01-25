@@ -2,7 +2,6 @@ import axios from 'axios';
 import { create } from 'zustand';
 import { AUTH_ROUTES } from '../constants';
 
-// Configure axios to include credentials (cookies) by default
 axios.defaults.withCredentials = true;
 
 interface AuthUser {
@@ -42,7 +41,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
                 password
             });
 
-            const data = response.data;
+            const data = response.data?.data || null;
 
             set({
                 user: data.user,
@@ -50,7 +49,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
                 loading: false,
             });
         } catch (error: any) {
-            console.log(error);
+            console.error(error);
             set({
                 error: error.message,
                 loading: false,
@@ -67,7 +66,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
                 password
             });
 
-            const data = response.data;
+            const data = response.data?.data || null;
 
             set({
                 user: data.user,
@@ -83,12 +82,20 @@ export const useAuthStore = create<AuthStore>((set) => ({
         }
     },
 
-    logout: () => {
-        set({
-            user: null,
-            isAuthenticated: false,
-            error: null,
-        });
+    logout: async () => {
+        try {
+            await axios.get(AUTH_ROUTES.LOGOUT);
+            set({
+                user: null,
+                isAuthenticated: false,
+                error: null,
+            });
+        } catch (error: any) {
+            set({
+                error: error.message
+            });
+            throw error;
+        }
     },
 
     clearError: () => {
@@ -103,7 +110,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
         set({ loading: true });
         try {
             const response = await axios.get(AUTH_ROUTES.VERIFY_TOKEN);
-            const data = response.data;
+            const data = response.data?.data || null;
 
             set({
                 user: data.user,

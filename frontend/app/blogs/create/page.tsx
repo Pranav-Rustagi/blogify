@@ -9,6 +9,7 @@ import { ProtectedRoute } from '@/app/_components/ProtectedRoute';
 import { Button, TextInput, Card, FormSection } from '@/app/_components/form-components';
 import { BLOG_ROUTES } from '@/src/constants';
 import { LogOut } from 'lucide-react';
+import Footer from '@/app/_components/Footer';
 
 function CreateBlogContent() {
     const router = useRouter();
@@ -223,6 +224,8 @@ function CreateBlogContent() {
                     </FormSection>
                 </Card>
             </main>
+
+            <Footer />
         </div>
     );
 }
