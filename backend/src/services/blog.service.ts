@@ -4,7 +4,7 @@ import { pool } from "../database/db";
 
 const fetchPaginatedBlogs = async (limit: number, offset: number) => {
     try {
-        const query = "SELECT b.id, u.username AS author, b.title, b.body, b.created_at FROM blogs b JOIN users u ON b.author_id = u.id ORDER BY b.created_at DESC LIMIT $1 OFFSET $2;";
+        const query = "SELECT b.id, u.username AS author_name, b.title, b.body, b.created_at FROM blogs b JOIN users u ON b.author_id = u.id ORDER BY b.created_at DESC LIMIT $1 OFFSET $2;";
         const records = await pool.query(query, [limit, offset]);
         return records.rows;
     } catch (err: any) {
