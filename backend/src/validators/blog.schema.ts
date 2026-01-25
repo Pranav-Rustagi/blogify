@@ -12,6 +12,12 @@ const blogSchema = z.object({
         .max(1000, "Content must be at most 1000 characters")
 });
 
+const blogSchemaWithId = blogSchema.extend({
+    id: z.string()
+});
+
+
 export {
-    blogSchema
+    blogSchema,
+    blogSchemaWithId
 }

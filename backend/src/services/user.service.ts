@@ -68,6 +68,7 @@ const signInUser = async ({ email, password }: signInProps) => {
         const records = await pool.query(query, [email]);
         
         if ((records.rowCount ?? 0) === 0) {
+            logger.error(ERRORS.INVALID_CREDENTIALS.message);
             throw new Error(ERROR_TYPES.INVALID_CREDENTIALS);
         }
         
@@ -75,6 +76,7 @@ const signInUser = async ({ email, password }: signInProps) => {
         const isPasswordValid = await bcrypt.compare(password, user.password_hash);
 
         if (!isPasswordValid) {
+            logger.error(ERRORS.INVALID_CREDENTIALS.message);
             throw new Error(ERROR_TYPES.INVALID_CREDENTIALS);
         }
 
@@ -97,6 +99,7 @@ const getUserById = async (userId: string) => {
         const records = await pool.query(query, [userId]);
         
         if ((records.rowCount ?? 0) === 0) {
+            logger.error(ERRORS.INVALID_CREDENTIALS.message);
             throw new Error(ERROR_TYPES.INVALID_CREDENTIALS);
         }
         

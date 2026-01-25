@@ -1,5 +1,5 @@
 import logger from "../config/logger";
-import { ERROR_TYPES } from "../constants/errors";
+import { ERROR_TYPES, ERRORS } from "../constants/errors";
 import { pool } from "../database/db";
 
 const fetchPaginatedBlogs = async (limit: number, offset: number) => {
@@ -47,6 +47,7 @@ const fetchBlogData = async (blogId: string) => {
         const records = await pool.query(query, [blogId]);
 
         if (records.rowCount === 0) {
+            logger.error(ERRORS.NOT_FOUND.message);
             throw new Error(ERROR_TYPES.NOT_FOUND);
         }
         return records.rows[0];
@@ -59,6 +60,7 @@ const fetchBlogData = async (blogId: string) => {
 
 
 interface BlogProps {
+    id?: string
     author_id: string,
     title: string,
     body: string
@@ -76,8 +78,34 @@ const saveBlog = async ({ author_id, title, body }: BlogProps) => {
     }
 }
 
+const updateBlog = async ({ id, title, body, author_id }: BlogProps) => {
+    try {
+        const query = "UPDATE blogs SET title = $1, body = $2, updated_at = NOW() WHERE id = $3 AND author_id = $4";
+        const result = await pool.query(query, [title, body, id, author_id]);
+        return true;
+    } catch (err: any) {
+        logger.error(err.message);
+        logger.error("Error occurred in updateBlog()");
+        throw err;
+    }
+}
+
+const deleteBlog = async (blogId: string, author_id: string) => {
+    try {
+        const query = "DELETE FROM blogs WHERE id = $1 AND author_id = $2";
+        const result = await pool.query(query, [blogId, author_id]);
+        return true;
+    } catch (err: any) {
+        logger.error(err.message);
+        logger.error("Error occurred in deleteBlog()");
+        throw err;
+    }
+}
+
 export {
     fetchBlogs,
     saveBlog,
-    fetchBlogData
+    fetchBlogData,
+    updateBlog,
+    deleteBlog
 }
