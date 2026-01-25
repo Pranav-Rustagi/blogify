@@ -29,7 +29,6 @@ function UpdateBlogContent() {
         body: '',
     });
 
-    // Fetch blog data on mount
     const fetchBlogById = useCallback(async (id: string) => {
         try {
             setLoading(true);
@@ -37,13 +36,11 @@ function UpdateBlogContent() {
             const response = await axios.get(`${BLOG_ROUTES.FETCH}/${id}`);
             const blog = response.data?.data;
 
-            // Set form data with fetched blog content
             setFormData({
                 title: blog.title,
                 body: blog.body,
             });
 
-            // Check if current user is the author
             if (user && blog.author_id === user.id) {
                 setIsAuthor(true);
             }
@@ -61,7 +58,6 @@ function UpdateBlogContent() {
         }
     }, [blogId, fetchBlogById]);
 
-    // Redirect if not authenticated or not the author
     useEffect(() => {
         if (!isAuthenticated) {
             router.push('/auth/login');

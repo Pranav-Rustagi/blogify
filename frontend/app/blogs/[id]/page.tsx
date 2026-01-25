@@ -154,7 +154,6 @@ export default function BlogDetailPage() {
 
                             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500">
                                 <span>
-                                    {/* By{' '} */}
                                     <span className="font-semibold text-dark-red">
                                         @{currentBlog.author_name}
                                     </span>
