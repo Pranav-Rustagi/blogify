@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { fetchBlogs, saveBlog } from "../services/blog.service";
+import { fetchBlogData, fetchBlogs, saveBlog } from "../services/blog.service";
 import { responseErrorHandler, responseHandler } from "../utils/responseHandler";
 import logger from "../config/logger";
 import { blogSchema } from "../validators/blog.schema";
@@ -24,6 +24,23 @@ const viewBlogsController = async (req: Request, res: Response) => {
                 limit,
             }
         }
+
+        responseHandler({ res, data: responseData });
+    } catch (err) {
+        logger.error("Error occurred in viewBlogsController()");
+        throw err;
+    }
+};
+
+
+const viewBlogController = async (req: Request, res: Response) => {
+    try {
+        const blogId = req.params.blogId as string || null;
+        if (!blogId) {
+            throw new Error(ERROR_TYPES.NOT_FOUND);
+        }
+
+        const responseData = await fetchBlogData(blogId);
 
         responseHandler({ res, data: responseData });
     } catch (err) {
@@ -63,5 +80,6 @@ const createBlogController = async (req: Request, res: Response) => {
 
 export {
     viewBlogsController,
+    viewBlogController,
     createBlogController
 };

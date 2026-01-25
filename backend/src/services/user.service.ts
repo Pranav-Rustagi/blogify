@@ -79,8 +79,9 @@ const signInUser = async ({ email, password }: signInProps) => {
         }
 
         return {
-            userId: user.id,
-            email: user.email
+            id: user.id,
+            email: user.email,
+            username: user.username
         };
 
     } catch (err: any) {
