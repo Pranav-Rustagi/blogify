@@ -6,7 +6,8 @@ export const BLOG_URL = `${BASE_URL}/api/blogs`;
 export const AUTH_ROUTES = {
     SIGNUP: AUTH_URL + '/signup',
     SIGNIN: AUTH_URL + '/signin',
-    VERIFY_TOKEN: AUTH_URL + '/verify'
+    VERIFY_TOKEN: AUTH_URL + '/verify',
+    LOGOUT: AUTH_URL + '/logout'
 }
 
 export const BLOG_ROUTES = {

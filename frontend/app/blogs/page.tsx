@@ -6,6 +6,7 @@ import { useBlogStore } from '@/src/store/blogs';
 import { useCallback, useEffect } from 'react';
 import { LogOut, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Footer from '../_components/Footer';
 
 export default function BlogsPage() {
     const { isAuthenticated, user, logout } = useAuthStore();
@@ -102,6 +103,7 @@ export default function BlogsPage() {
                             value={searchQuery}
                             onChange={(e) => handleSearchChange(e.target.value)}
                             className="w-full px-6 py-3 rounded-lg border-2 border-gray-200 bg-white focus:outline-none focus:border-dark-blue transition-all text-gray-800 placeholder-gray-400"
+                            disabled
                         />
                         <span className="absolute right-4 top-3.5 text-gray-400">
                             <Search className="w-5 h-5" />
@@ -183,8 +185,8 @@ export default function BlogsPage() {
                                                 key={page}
                                                 onClick={() => handlePageChange(page)}
                                                 className={`px-3 py-2 rounded-lg font-semibold transition-all ${currentPage === page
-                                                        ? 'bg-dark-blue text-white'
-                                                        : 'bg-gray-200 text-dark-blue hover:bg-gray-300'
+                                                    ? 'bg-dark-blue text-white'
+                                                    : 'bg-gray-200 text-dark-blue hover:bg-gray-300'
                                                     }`}
                                             >
                                                 {page}
@@ -206,6 +208,9 @@ export default function BlogsPage() {
                     </>
                 )}
             </main>
+
+            <Footer />
+
         </div>
     );
 }
