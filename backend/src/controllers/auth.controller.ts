@@ -2,10 +2,11 @@ import type { Request, Response } from "express";
 import { responseErrorHandler, responseHandler } from "../utils/responseHandler";
 import { signUpSchema, signInSchema } from "../validators/auth.schema";
 import z from "zod";
-import { registerUser, signInUser } from "../services/user.service";
+import { registerUser, signInUser, getUserById } from "../services/user.service";
 import { RESPONSE_TYPES } from "../constants/response";
 import logger from "../config/logger";
 import { signToken } from "../utils/jwt";
+import { ERROR_TYPES } from "../constants/errors";
 
 const signUpController = async (req: Request, res: Response) => {
     try {
@@ -52,7 +53,7 @@ const signInController = async (req: Request, res: Response) => {
         res.cookie("access_token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            sameSite: "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
@@ -65,13 +66,28 @@ const signInController = async (req: Request, res: Response) => {
     }
 }
 
+const verifyAuthController = async (req: Request, res: Response) => {
+    try {
+        if (!req.user) {
+            throw new Error(ERROR_TYPES.UNAUTHORIZED);
+        }
 
+        const user = await getUserById(req.user.userId);
 
+        const responseCode = RESPONSE_TYPES.SIGN_IN_SUCCESS as keyof typeof RESPONSE_TYPES;
+
+        responseHandler({ res, responseCode, data: { user } });
+    } catch (err: any) {
+        logger.error("Error occurred in verifyAuthController()");
+        throw err;
+    }
+}
 
 
 
 
 export {
     signUpController,
-    signInController
+    signInController,
+    verifyAuthController
 }

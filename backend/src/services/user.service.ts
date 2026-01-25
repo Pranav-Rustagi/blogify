@@ -90,8 +90,31 @@ const signInUser = async ({ email, password }: signInProps) => {
     }
 }
 
+const getUserById = async (userId: string) => {
+    try {
+        const query = "SELECT id, username, email FROM users WHERE id = $1";
+        const records = await pool.query(query, [userId]);
+        
+        if ((records.rowCount ?? 0) === 0) {
+            throw new Error(ERROR_TYPES.INVALID_CREDENTIALS);
+        }
+        
+        const user = records.rows[0];
+        return {
+            id: user.id,
+            username: user.username,
+            email: user.email
+        };
+
+    } catch (err: any) {
+        logger.error(err.message);
+        logger.error("Error occurred in getUserById()");
+        throw err;
+    }
+}
 
 export {
     registerUser,
-    signInUser
+    signInUser,
+    getUserById
 };
