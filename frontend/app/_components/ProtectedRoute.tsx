@@ -5,16 +5,22 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, loading } = useAuthStore();
+  const { isAuthenticated, loading, initialized, initializeAuth } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
+    if (!initialized) {
+      initializeAuth();
+    }
+  }, [initialized, initializeAuth]);
+
+  useEffect(() => {
+    if (initialized && !loading && !isAuthenticated) {
       router.replace('/auth/login');
     }
-  }, [isAuthenticated, loading, router]);
+  }, [isAuthenticated, loading, initialized, router]);
 
-  if (loading) {
+  if (loading || !initialized) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-lg text-gray-600">Loading...</div>
