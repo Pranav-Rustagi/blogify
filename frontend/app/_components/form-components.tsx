@@ -71,8 +71,8 @@ export const TextInput = ({ id, name, type = 'text', value, onChange, placeholde
 
 export const Button = ({ children, variant = 'primary', disabled = false, loading = false, loadingText = 'Loading...', type = 'button', className = '', ...props }: ButtonProps) => {
     const variants = {
-        primary: 'bg-linear-to-r from-dark-red to-red-600 text-white',
-        secondary: 'bg-linear-to-r from-dark-blue to-blue-700 text-white',
+        primary: 'bg-linear-to-r from-dark-red to-red-700 text-white',
+        secondary: 'bg-blue-100 text-dark-blue hover:text-dark-blue',
         outline: 'border-2 border-dark-blue text-dark-blue hover:bg-blue-50',
     };
 
