@@ -6,7 +6,7 @@ import { registerUser, signInUser, getUserById } from "../services/user.service"
 import { RESPONSE_TYPES } from "../constants/response";
 import logger from "../config/logger";
 import { signToken } from "../utils/jwt";
-import { ERROR_TYPES } from "../constants/errors";
+import { ERROR_TYPES, ERRORS } from "../constants/errors";
 
 const signUpController = async (req: Request, res: Response) => {
     try {
@@ -69,6 +69,7 @@ const signInController = async (req: Request, res: Response) => {
 const verifyAuthController = async (req: Request, res: Response) => {
     try {
         if (!req.user) {
+            logger.error(ERRORS.UNAUTHORIZED.message);
             throw new Error(ERROR_TYPES.UNAUTHORIZED);
         }
 
