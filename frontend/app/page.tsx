@@ -2,84 +2,24 @@
 
 import Link from 'next/link';
 import { useAuthStore } from '@/src/store/auth';
-import { useCallback, useEffect, useState } from 'react';
-import { LogOut } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import Footer from './_components/Footer';
+import Navbar from './_components/Navbar';
 
 export default function Home() {
-    const { isAuthenticated, user, logout } = useAuthStore();
-    const [newsletterEmail, setNewsletterEmail] = useState('');
-
-    const handleNewsLetterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNewsletterEmail(e.target.value);
-    };
-
-    const router = useRouter();
+    const { isAuthenticated } = useAuthStore();
 
     const fetchAllBlogs = () => { };
-    const blogs: any = [];
+    // const blogs: any = [];
 
     useEffect(() => {
         fetchAllBlogs();
     }, [fetchAllBlogs]);
 
-    const handleLogout = useCallback(() => {
-        logout();
-        router.push('/');
-    }, [router, logout]);
-
     return (
         <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-red-50">
 
-            <nav className="bg-white shadow-sm border-b border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-                    <div>
-                        <h1 className="text-3xl font-bold bg-linear-to-r from-dark-red to-dark-blue bg-clip-text text-transparent">
-                            Blogify
-                        </h1>
-                    </div>
-                    <div className="flex gap-4 items-center">
-                        <Link
-                            href="/blogs"
-                            className="px-4 py-2 bg-blue-100 text-dark-blue rounded-lg hover:text-dark-blue transition-colors font-semibold"
-                        >
-                            Read Blogs
-                        </Link>
-                        {isAuthenticated ? (
-                            <>
-                                <Link
-                                    href="/blogs/create"
-                                    className="px-4 py-2 bg-dark-blue text-white rounded-lg transition-colors font-semibold"
-                                >
-                                    Write Blog
-                                </Link>
-                                <button
-                                    onClick={handleLogout}
-                                    className="flex gap-2 items-center px-4 py-2 text-dark-blue rounded-lg transition-colors font-semibold"
-                                >
-                                    Logout <LogOut className="w-5 h-5" />
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <Link
-                                    href="/auth/login"
-                                    className="px-4 py-2 bg-blue-100 text-dark-blue rounded-lg hover:text-dark-blue transition-colors font-semibold"
-                                >
-                                    Sign In
-                                </Link>
-                                <Link
-                                    href="/auth/signup"
-                                    className="px-4 py-2 bg-dark-blue text-white rounded-lg transition-colors font-semibold"
-                                >
-                                    Sign Up
-                                </Link>
-                            </>
-                        )}
-                    </div>
-                </div>
-            </nav>
+            <Navbar />
 
             <main className="max-w-7xl mx-auto px-4 flex flex-col gap-32">
                 <div className="text-center min-h-screen flex flex-col justify-center items-center">
@@ -183,7 +123,8 @@ export default function Home() {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                             <div>
                                 <div className="text-4xl md:text-5xl font-bold text-dark-red mb-2">
-                                    {blogs.length}
+                                    {/* {blogs.length} */}
+                                    100+
                                 </div>
                                 <p className="text-gray-600 font-semibold">Active Blogs</p>
                             </div>
@@ -223,10 +164,10 @@ export default function Home() {
                             Discover the latest and most inspiring content from our community
                         </p>
                     </div>
-                    {blogs.length > 0 ? (
+                    {false /*&& blogs.length > 0*/ ? (
                         <div className='w-full'>
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                                {blogs.slice(0, 3).map((blog: any) => (
+                                {/* {blogs.slice(0, 3).map((blog: any) => (
                                     <Link href={`/blogs/${blog.id}`} key={blog.id}>
                                         <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-2xl hover:scale-105 transition-all h-full flex flex-col cursor-pointer group">
                                             <div className="mb-4">
@@ -262,7 +203,7 @@ export default function Home() {
                                             </div>
                                         </div>
                                     </Link>
-                                ))}
+                                ))} */}
                             </div>
 
                             <div className="text-center bg-linear-to-r from-dark-blue/5 to-dark-red/5 rounded-2xl p-12">
@@ -281,15 +222,15 @@ export default function Home() {
                             </div>
                         </div>
                     ) : (
-                        <div className="text-center py-24 bg-blue-50 rounded-2xl w-full">
+                        <div className="text-center py-24 bg-linear-to-r from-dark-blue/5 to-dark-red/5 rounded-2xl w-full">
                             <p className="text-xl text-gray-600 mb-10">
-                                No blogs yet, but there are stories waiting to be written!
+                                No featured blogs yet, but there are stories waiting to be written!
                             </p>
                             <Link
                                 href={isAuthenticated ? "/blogs/create" : "/auth/signup"}
                                 className="inline-block px-8 py-4 bg-linear-to-r from-dark-red to-red-700 text-white font-bold rounded-lg hover:shadow-lg transition-all hover:scale-105 text-lg"
                             >
-                                Be the First to Write
+                                Write now
                             </Link>
                         </div>
                     )}
