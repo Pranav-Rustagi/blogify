@@ -43,7 +43,7 @@ const fetchBlogs = async (limit: number, offset: number) => {
 
 const fetchBlogData = async (blogId: string) => {
     try {
-        const query = "SELECT b.id, u.id as author_id, u.username AS author, b.title, b.body, b.created_at, b.updated_at FROM blogs b JOIN users u ON b.author_id = u.id WHERE b.id = $1";
+        const query = "SELECT b.id, u.id as author_id, u.username AS author_name, b.title, b.body, b.created_at, b.updated_at FROM blogs b JOIN users u ON b.author_id = u.id WHERE b.id = $1";
         const records = await pool.query(query, [blogId]);
 
         if (records.rowCount === 0) {

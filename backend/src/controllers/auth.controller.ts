@@ -46,7 +46,7 @@ const signInController = async (req: Request, res: Response) => {
         const user = await signInUser({ ...parsed.data });
 
         const token = signToken({
-            userId: user.userId,
+            userId: user.id,
             email: user.email
         });
 
@@ -59,7 +59,7 @@ const signInController = async (req: Request, res: Response) => {
 
         const responseCode = RESPONSE_TYPES.SIGN_IN_SUCCESS as keyof typeof RESPONSE_TYPES;
 
-        responseHandler({ res, responseCode, data: { user: user.userId } });
+        responseHandler({ res, responseCode, data: { user } });
     } catch (err: any) {
         logger.error("Error occurred in signInController()");
         throw err;
@@ -83,11 +83,20 @@ const verifyAuthController = async (req: Request, res: Response) => {
     }
 }
 
-
+const logoutAuthController = async (req: Request, res: Response) => {
+    try {
+        res.clearCookie("access_token");
+        responseHandler({ res });
+    } catch (err: any) {
+        logger.error("Error occurred in logoutAuthController()");
+        throw err;
+    }
+}
 
 
 export {
     signUpController,
     signInController,
-    verifyAuthController
+    verifyAuthController,
+    logoutAuthController
 }
