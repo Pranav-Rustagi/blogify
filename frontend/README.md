@@ -11,19 +11,19 @@ This repository contains the Next.js frontend for the Blogify application.
 
 ### 1. Install dependencies:
 
-    ```bash
-    cd frontend
-    bun install
-    ```
+```bash
+cd frontend
+bun install
+```
 
 ### 2. Create a `.env` file in the `frontend` folder (see Environment variables below).
 
 ### 3. Run the development server:
 
-    ```bash
-    bun run dev
-    # opens at http://localhost:3000 by default
-    ```
+```bash
+bun run dev
+# opens at http://localhost:3000 by default
+```
 
 ## Available scripts (from `package.json`)
 
