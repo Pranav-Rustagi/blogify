@@ -60,7 +60,7 @@ export default function BlogDetailPage() {
 
     try {
       setIsDeleting(true);
-      await axios.delete(`/api/blogs/${blogId}`);
+      await axios.delete(`${BLOG_ROUTES.DELETE}/${blogId}`);
       router.push('/blogs');
     } catch (error: any) {
       alert(error.response?.data?.message || 'Failed to delete blog');

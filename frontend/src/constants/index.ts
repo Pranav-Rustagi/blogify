@@ -12,5 +12,7 @@ export const AUTH_ROUTES = {
 
 export const BLOG_ROUTES = {
     FETCH: BLOG_URL,
-    CREATE: BLOG_URL + '/create'
+    CREATE: BLOG_URL + '/create',
+    UPDATE: BLOG_URL + '/update',
+    DELETE: BLOG_URL + '/delete'
 }
