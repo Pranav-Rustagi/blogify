@@ -16,6 +16,7 @@ function UpdateBlogContent() {
     const { isAuthenticated, user } = useAuthStore();
     const [submitting, setSubmitting] = useState(false);
     const [isAuthor, setIsAuthor] = useState(false);
+    const [checkingAuthor, setCheckingAuthor] = useState(true);
 
     const { request, loading, error } = useApi();
 
@@ -31,6 +32,8 @@ function UpdateBlogContent() {
 
     const fetchBlogById = useCallback(
         async (id: string) => {
+            setCheckingAuthor(true);
+
             const response = await request(
                 "GET",
                 `${BLOG_ROUTES.FETCH}/${id}`,
@@ -54,6 +57,8 @@ function UpdateBlogContent() {
             if (user && blog.author_id === user.id) {
                 setIsAuthor(true);
             }
+
+            setCheckingAuthor(false);
         },
         [user, request]
     );
@@ -67,10 +72,10 @@ function UpdateBlogContent() {
     useEffect(() => {
         if (!isAuthenticated) {
             router.push('/auth/login');
-        } else if (!loading && !isAuthor) {
+        } else if (!checkingAuthor && !isAuthor) {
             router.push(`/blogs/${blogId}`);
         }
-    }, [isAuthenticated, isAuthor, loading, router, blogId]);
+    }, [isAuthenticated, isAuthor, checkingAuthor, router, blogId]);
 
     const validateForm = () => {
         const errors = {
