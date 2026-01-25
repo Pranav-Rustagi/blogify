@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Blogify Frontend
 
-## Getting Started
+This repository contains the Next.js frontend for the Blogify application.
 
-First, run the development server:
+## Prerequisites
+
+- Node.js 18+ (recommended)
+- bun (or npm/pnpm/yarn)
+
+## Quick setup
+
+### 1. Install dependencies:
+
+    ```bash
+    cd frontend
+    bun install
+    ```
+
+### 2. Create a `.env` file in the `frontend` folder (see Environment variables below).
+
+### 3. Run the development server:
+
+    ```bash
+    bun run dev
+    # opens at http://localhost:3000 by default
+    ```
+
+## Available scripts (from `package.json`)
+
+- `bun run dev` — run Next.js in development mode
+- `bun run build` — build the app for production
+- `bun run start` — start the production server (requires a prior `build`)
+- `bun run lint` — run ESLint
+
+Example: build and start production server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun run build
+bun run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Note:** Next.js reads `NEXT_PUBLIC_` environment variables at build time. If you change `NEXT_PUBLIC_*` values, rebuild the app for changes to take effect in production.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env` file at the root of the `frontend` folder with the variables below.
 
-## Learn More
+- `NEXT_PUBLIC_BASE_URL` — The base URL of the backend API. Example:
 
-To learn more about Next.js, take a look at the following resources:
+  ```dotenv
+  NEXT_PUBLIC_BASE_URL=http://localhost:4000
+  ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+  This variable is used by the frontend to call the backend API (client-side). Ensure the backend is running and accessible at this URL when developing locally.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Ports & host
 
-## Deploy on Vercel
+- Development server defaults to port `3000`. To change the port when running locally, set the `PORT` environment variable before running `bun run dev`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Common issues / troubleshooting
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- If API requests fail, confirm the backend is running and `NEXT_PUBLIC_BASE_URL` is correct.
+- For CORS errors, ensure the backend allows requests from the frontend origin (e.g., `http://localhost:3000`).
+- If changes to `NEXT_PUBLIC_BASE_URL` don't appear in production, rebuild the frontend.
+
+## Useful links
+
+- Next.js: https://nextjs.org/docs
+- bun: https://bun.sh/docs/quickstart
