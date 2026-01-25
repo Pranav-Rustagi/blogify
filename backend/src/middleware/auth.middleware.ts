@@ -3,16 +3,11 @@ import { verifyToken } from "../utils/jwt";
 import { ERROR_TYPES } from "../constants/errors";
 import logger from "../config/logger";
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader) {
-            throw Error(ERROR_TYPES.UNAUTHORIZED);
-        }
-
-        const [scheme, token] = authHeader.split(" ");
-
-        if (scheme !== "Bearer" || !token) {
+        const token = req.cookies?.access_token;
+        if (!token) {
+            logger.error("Access token not found");
             throw Error(ERROR_TYPES.UNAUTHORIZED);
         }
 
